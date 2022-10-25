@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import styled from "@emotion/styled"
+import Error from "./Error"
 import useSelectMonedas from "../hooks/useSelectMonedas"
 import { monedas } from "../data/monedas"
 
@@ -23,10 +24,12 @@ const InputSubmit = styled.input`
 
 `
 
-const Formulario = () => {
+const Formulario = ({ setMonedas }) => {
 
     //state para el select de criptomonedas
     const [criptos, setCriptos] = useState([])
+    const [error, setError] = useState(false)
+
 
 
     //aqui,moneda es el mismo state del hook, solo que el profe  le da este nombre
@@ -57,15 +60,39 @@ const Formulario = () => {
         consultarAPI()
     }, [])
 
+    //funcion para validar el formulario
+    const handleSubmit = e => {
+        e.preventDefault()
+
+        //validacion
+        if ([moneda, criptoMoneda].includes("")) {
+            setError(true)
+            return
+        }
+
+        //si pasa la validacion se pone el state en false de nuevo y se llena el objeto del state de monedas de App.jsx con los valores que se eligieron en el formulario, cuando este objeto este lleno se procede a consultar la API para que nos de la cotizacion, esto se hace en App.jsx con un useEffect.
+        setError(false)
+        setMonedas({
+            moneda,
+            criptoMoneda
+        })
+
+    }
+
 
     return (
-        <form>
+        <>
+            {error && <Error>Todos los campos son obligatorios</Error>}
+            <form
+                onSubmit={handleSubmit}
+            >
 
-            <SelectMonedas />
-            <SelectCriptomoneda />
+                <SelectMonedas />
+                <SelectCriptomoneda />
 
-            <InputSubmit type="submit" value="Cotizar" />
-        </form>
+                <InputSubmit type="submit" value="Cotizar" />
+            </form>
+        </>
     )
 }
 
