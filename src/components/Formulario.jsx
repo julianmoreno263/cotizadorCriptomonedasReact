@@ -42,7 +42,7 @@ const Formulario = ({ setMonedas }) => {
     //useeffect para consultar la API de criptomonedas,apenas carge la app se consulta la API, por eso se ponen las dependencias como un array vacio
     useEffect(() => {
         const consultarAPI = async () => {
-            const url = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD"
+            const url = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD"
             const respuesta = await fetch(url)
             const resultado = await respuesta.json()
 

@@ -3,6 +3,8 @@ import styled from "@emotion/styled"
 import ImagenCripto from "./img/imagen-criptos.png"
 import Formulario from "./components/Formulario"
 import Resultado from "./components/Resultado"
+import Spinner from "./components/Spinner"
+
 
 //primer styled component
 const Contenedor = styled.div`
@@ -52,6 +54,8 @@ function App() {
   //state de las monedas y criptomonedas para realizar la consulta a la API para las cotizaciones, este state sera un objeto que se llenara con los datos que se ingresen en el formulario
   const [monedas, setMonedas] = useState({})
   const [resultado, setResultado] = useState({})
+  const [cargando, setCargando] = useState(false)//state para el spinner de carga
+
 
 
   //useEffect que escuchara los cambios que sucedan en el state de monedas
@@ -59,6 +63,8 @@ function App() {
     if (Object.keys(monedas).length > 0) {
 
       const cotizarCripto = async () => {
+        setCargando(true)
+        setResultado({})//RESETEAMOS EL RESULTADO ANTERIOR ARA QUE NO APAREZCA CUANDO ESTE CARGANDO
         const { moneda, criptoMoneda } = monedas
         const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptoMoneda}&tsyms=${moneda}`
 
@@ -67,6 +73,8 @@ function App() {
 
         //con los [] le estamos diciendo que busque las propiedades del objeto monedas y asi las tomara dinamicamente y podemos acceder a la información que nos muestra la API desde la propiedad DISPLAY que ella tiene al dar una respuesta
         setResultado(resultado.DISPLAY[criptoMoneda][moneda])
+
+        setCargando(false)
 
       }
       cotizarCripto()
@@ -83,7 +91,7 @@ function App() {
           setMonedas={setMonedas}
         />
 
-
+        {cargando && <Spinner />}
         {resultado.PRICE && <Resultado resultado={resultado} />}
 
       </div>
